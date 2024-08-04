@@ -118,10 +118,9 @@ void OTASetup(){
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-
-  uint32_t millisTimer = 0;
-
   
+  LEDsOff();
+  uint32_t millisTimer = 0;  
   while (1){
     if (millis() - millisTimer > 1000) {
       millisTimer = millis();
@@ -157,13 +156,15 @@ void setup() {
     attachInterruptArg(btn[i].PIN, isr, &btn[i], FALLING);
 
     pinMode(LEDs[i], OUTPUT);
-    LEDsOff();
   }
+  
+  LEDsON();
 
 
   if(digitalRead(btn[0].PIN) == LOW)
     OTASetup();
 
+  delay(1000);
 // Init serial port for DFPlayer Mini
   softwareSerial.begin(9600, SWSERIAL_8N1, PIN_MP3_RX, PIN_MP3_TX);
 
@@ -173,10 +174,13 @@ void setup() {
   } else {
     Serial.println("Connecting to DFPlayer Mini failed!");
   }
-      // Set volume to maximum (0 to 30).
+
+  delay(1000);
+      // Se t volume to maximum (0 to 30).
     player.volume(30);
     // Play the first MP3 file on the SD card
     // player.play(2);
+  LEDsOff();
 }
 
 
@@ -184,24 +188,29 @@ void setup() {
 
 void loop() {
   static uint8_t lastLed = 0;
+  static uint8_t Ledlit = 0;
   static uint8_t lastRec = 0;
+  static uint8_t recToPlay = 0;
+
 
 
   for (int i=0 ; i<IO_NUM;i++){
     if (btn[i].pressed) {
       // Serial.printf("Button %d has been pressed %lu times\n", i+1 , btn[i].numberKeyPresses);
       LEDsOff();
-      lastLed = random(IO_NUM);
-      while (lastLed == random(IO_NUM)){
-        lastLed = random(IO_NUM);
+      Ledlit = random(6);
+      while (lastLed == Ledlit){
+        Ledlit = random(6);
       }
-      digitalWrite(LEDs[lastLed], LOW);
+      digitalWrite(LEDs[Ledlit], LOW);
+      lastLed = Ledlit;
       btn[i].pressed = false;
 
-      while (lastRec == random(10)){
-        lastRec = random(10);
-      }
-      player.play(lastRec);
+      recToPlay = random(11);
+      while (lastRec == recToPlay)
+          recToPlay = random(11);
+      player.play(recToPlay);
+      lastRec = recToPlay;
     }
   }
 
