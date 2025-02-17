@@ -18,8 +18,8 @@ SoftwareSerial softwareSerial(PIN_MP3_RX, PIN_MP3_TX);
 // Create the Player object
 DFRobotDFPlayerMini player;
 
-const char *ssid = "ayelet";
-const char *password = "0524325345";
+const char *ssid = "YourSSID";
+const char *password = "YourPassword";
 
 #define DEBOUNCE 250
 #define IO_NUM 6
